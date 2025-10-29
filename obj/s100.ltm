@@ -1,0 +1,68 @@
+{
+  "TemplatesSect": {
+    "RelationTemplates": [
+      {
+        "TemplateName": "Все целевые",
+        "IsBack": false,
+        "Relations": [
+          {
+            "IsBack": false,
+            "TemplateRef": "Все целевые"
+          }
+        ]
+      },
+      {
+        "TemplateName": "Все исходные",
+        "IsBack": true,
+        "Relations": [
+          {
+            "IsBack": true,
+            "TemplateRef": "Все исходные"
+          }
+        ]
+      },
+      {
+        "TemplateName": "Все связанные",
+        "Relations": [
+          {
+            "TemplateRef": "Все связанные"
+          }
+        ]
+      },
+      {
+        "TemplateName": "Шаблон first",
+        "RoleName": "first",
+        "IsBack": false,
+        "Relations": [
+          {
+            "RoleName": "first",
+            "IsBack": false,
+            "TemplateRef": "Шаблон first"
+          },
+          {
+            "RoleName": "next",
+            "IsBack": false,
+            "TemplateRef": "Шаблон next"
+          }
+        ]
+      },
+      {
+        "TemplateName": "Шаблон next",
+        "RoleName": "next",
+        "IsBack": false,
+        "Relations": [
+          {
+            "RoleName": "first",
+            "IsBack": false,
+            "TemplateRef": "Шаблон first"
+          },
+          {
+            "RoleName": "next",
+            "IsBack": false,
+            "TemplateRef": "Шаблон next"
+          }
+        ]
+      }
+    ]
+  }
+}

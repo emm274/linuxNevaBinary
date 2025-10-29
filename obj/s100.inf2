@@ -1,0 +1,361 @@
+
+//Данный файл описывает шаблоны для отображения объектов выборки в окне сравнения по опции Предъявить "+Атрибуты"
+//В данной опции в каждой половине окна сравнения отображаются атрибуты и одного объекта, и блока объектов, связанных в цепочку связями.
+//Алгоритм обработки как первого, так и второго объекта парной выборки (левая и правая половины окна сравнения) или одинарной выборки:
+//Для объекта сначала отображаются вся его информация.
+//Затем в файле S100.inf2 находится первый шаблон для данного кода объекта (шаблонов может быть несколько и их использование см. ниже).
+//1-я строка шаблона - код объекта и имя шаблона (через пробел в кавычках). Если шаблонов несколько, то они имеют одинаковый код, но разные имена.
+//в последующих строках шаблона указаны имена связей, наличие которых по указанному порядку нужно проверить у объекта.
+// если после имени связи стоит символ ">", то искать только исходящую связь стаким именем, символ "<" - входящую связь.
+//Если связь найдена, то по этой связи читается объект и его информация выводится в окно сравнения ниже предыдущего объекта.
+//Если перед именем связи стоит символ "+", то информация об этом объекте "сдвигается" на один уровень вправо относительно предыдущего объекта.
+//Если по данному имени несколько связей, то информация об объектах выводится в последовальности после сортировки по их кодам.
+//Если после имени связи через пробел в кавычках указано имя другого шаблона, то после отображения информации об этом объекте, необходимо обработать этот шаблон, т.е. также найти объекты по связям и отобразить их информацию.
+//Т.е. шаблоны могут быть связаны в цепочку по связям между объектами.
+//После обработки отдельной цепочки идет возврат к начальному шаблону и обрабатывается следующая связь.
+//Для окна сравнения в отдельном поле (combobox) отображается имя используемого шаблона.
+//Если шаблонов для объекта данного кода несколько, то оператор может выбрать имя нужного шаблона в этом поле combobox.
+//После выбора другого шаблона заново отображается информация в окне сравнения.
+//Выбранное имя шаблона в поле combobox сохраняется при переходе к следующему объекту выборки.
+---------------------------
+:X9100000 "СНО"		   //Код объекта и "имя шаблона"
+	Sign_incl_AidNav "Знак и SupB" //имя исходящей связи (роли), + - отображение объекта сдвигается в дереве на один уровень.
+	MainLit
+	AddLit
+	ResLit
+	AidNav_LNDMRK
+	AidNav_PhisAIS
+	AidNav_RTPBCN
+	AidNav_BUISGL
+	AidNav_BRIDGE
+	AidNav_LNDMRK
+	AidNav_WindTurb
+	AidNav_NAVLNE	
+	+Provides
+---------------------------
+:X9100000 "СНО со строкой"
+	Sign_incl_AidNav "Provides"
+	MainLit "Provides"
+	AddLit "Provides"
+	ResLit "Provides"
+	AidNav_LNDMRK "Provides"
+	AN_desc_LitSig "Строка основного СНО" "Provides" //имя исходящей связи (роли) и имя шаблона, в котором описаны связи для данного объекта.
+	+Provides
+---------------------------
+:X7021610 "Строка основного СНО"
+	+first "Графа 1"
+	incl "Строка дополнительного СНО"
+---------------------------
+:X7021620 "Строка дополнительного СНО"
+	first "Графа 1"
+---------------------------
+:X7021100 "Графа 1"
+	next "Графа 2"
+---------------------------
+:X7021200 "Графа 2"
+	next "Графа 3"
+---------------------------
+:X7021300 "Графа 3"
+	next "Графа 4"
+---------------------------
+:X7021400 "Графа 4"
+	next
+---------------------------
+:S1900000 "Знак и SupB"
+	SupportedBy
+	Sign_Inf
+	+Provides
+---------------------------
+:S0200000 "AIS"
+	SupportedBy
+	PhisAIS_Inf "Огонь и SupB"
+---------------------------
+:S1900000 "Знак и СНО"
+	Sign_incl_AidNav "СНО"
+	+Provides
+---------------------------
+:S0700000 "Знак и SupB"
+	SupportedBy
+	Sign_Inf
+	+Provides
+---------------------------
+:S1800000 "Огонь и SupB"
+	SupportedBy "Знак и SupB"
+	LitSec_Inf "Знак и SupB"
+	LitAll_Inf "Знак и SupB"
+	+Provides
+---------------------------
+:X9110000 "Иностранные СНО"
+	ForiFori
+-------------------
+:S0000000 "Provides"
+	+Provides
+---------------------------
+:S1600000 "Режимный район и информация"
+	I_SupInf
+	Provides
+---------------------------
+:S1400004 "Район кабелей и информация"
+	I_SupInf
+	Provides
+--------------------------
+:S1500000 "Рекомендованные пути и информация"
+	I_SupInf
+	Provides
+--------------------------
+:X7052217 "Таблица цепи РНС"
+	first> "ВМ"
+--------------------------
+:X7051111 "ВМ"
+	next "База"
+--------------------------
+:X7051113 "База"
+	next "ВЩ"
+--------------------------
+:X7051112 "ВЩ"
+	next "ВМ"
+--------------------------
+:X7051590 "Строка РТСНО"
+	first> "Графа_1_РТСНО"
+--------------------------
+:X7051210 "Графа_1_РТСНО"
+	next "Графа_2_РТСНО"
+--------------------------
+:X7051220 "Графа_2_РТСНО"
+	next "Графа_3_РТСНО"
+--------------------------
+:X7051530 "Графа_3_РТСНО"
+	next "Графа_4_РТСНО"
+--------------------------
+:X7051540 "Графа_4_РТСНО"
+	next "Графа_5_РТСНО"
+--------------------------
+:X7051550 "Графа_5_РТСНО"
+-------------------
+:X9200000 "Морская карта"
+	MarMap_I_MarMap
+	MarMap_I_InsetMap
+--------------------------
+:S0000000 "any"
+	add "any"
+	AddLit "any"
+	AidNav_BRIDGE "any"
+	AidNav_BUISGL "any"
+	AidNav_I_RLcol5 "any"
+	AidNav_I_TabLin "any"
+	AidNav_LitSig "any"
+	AidNav_LNDMRK "any"
+	AidNav_NAVLNE "any"
+	AidNav_RTPBCN "any"
+	AN_desc_LitSig "any"
+	AN_incl_ColReg "any"
+	AN_incl_Reg "any"
+	AN_incl_SubUndReg "any"
+	AN_incl_UndReg "any"
+	areDesc "any"
+	AudiGr5 "any"
+	axis "any"
+	BERTHS_I_Dep "any"
+	BERTHS_I_Leng "any"
+	BERTHS_I_NamNum "any"
+	BERTHS_I_TabLin "any"
+	bookCorr "any"
+	BookReg_GuiMan "any"
+	BookReg_LitSigColReg "any"
+	canc "any"
+	catalog "any"
+	change "any"
+	chartList "any"
+	COALNE_LNDARE "any"
+	COALNE_LNDRGN "any"
+	ComponentOf "any"
+	CoorLine_I_ForiNM "any"
+	CoorPoint_CoorLine "any"
+	CoorPoint_I_BegPoiFW "any"
+	CoorPoint_I_ForiNM "any"
+	CoorPoint_I_ResAreDesc "any"
+	CoorPoint_I_TrafSep "any"
+	CorAidNav "any"
+	CorPoi "any"
+	corrInf "any"
+	depth "any"
+	desc "any"
+	direct "any"
+	dist "any"
+	editKind "any"
+	first "any"
+	firstPoi "any"
+	ForAid "any"
+	ForiFori "any"
+	forItem "any"
+	fwDesc "any"
+	GeObjs_I_Item3_Loci "any"
+	GeObjs_I_ItemRuNM_2 "any"
+	GeObjs_I_NavWarItem "any"
+	GeObjs_I_Parag "any"
+	GeObjs_I_Tab "any"
+	GeObjs_I_TabLin "any"
+	GeObjs_I_TabSell "any"
+	GeObjs_NavWar "any"
+	I_KindBook_I_InSheets "any"
+	I_LS1_Aid "any"
+	I_LS2_Aid "any"
+	I_LS3_Aid "any"
+	I_LS4_Aid "any"
+	I_LS5_Aid "any"
+	I_Navarea_I_DescNW "any"
+	I_Navarea_I_NWList "any"
+	I_Navarea_I_NWNum "any"
+	I_Navarea_I_UndSecNavar "any"
+	I_Navip_I_DescNW "any"
+	I_Navip_I_NWList "any"
+	I_Navip_I_NWNum "any"
+	I_Navip_I_UndSecNavar "any"
+	I_Note_I_Illus "any"
+	I_Parag_I_Item3_Loci "any"
+	I_Prip_I_DescNW "any"
+	I_Prip_I_NWList "any"
+	I_Prip_I_NWNum "any"
+	I_Prip_I_UndSecPrip "any"
+	I_Product_I_EditKind "any"
+	I_Product_I_Item3_Loci "any"
+	I_RegName_I_InSheets "any"
+	I_SupInf_I_KKScol6 "any"
+	I_SupInf_I_RLcol5 "any"
+	I_SupInf_I_RTRcol5 "any"
+	I_SupInf_I_SupInf "any"
+	incl "any"
+	Insert_I_Item2 "any"
+	IslandGroup_IslandGroup "any"
+	item2 "any"
+	Item4_Book "any"
+	Item4_Map "any"
+	itemRep "any"
+	latLon "any"
+	leader "any"
+	LitGr2 "any"
+	LitGr3 "any"
+	LitGr4 "any"
+	LitGr5 "any"
+	LitSigColReg_LitSigReg "any"
+	LitSigReg_LitSigUndReg "any"
+	LNDARE_COALNE "any"
+	look "any"
+	MainLit "any"
+	MarMap_I_InsetMap "any"
+	MarMap_I_MarMap "any"
+	name "any"
+	NavGr5 "any"
+	NAVLNE_BCNSPP "any"
+	NAVLNE_BCNSPP_1 "any"
+	NAVLNE_BOYSAW "any"
+	NAVLNE_BOYSPP "any"
+	NAVLNE_DAYMAR "any"
+	NAVLNE_I_TabLin "any"
+	NAVLNE_LitAll "any"
+	NAVLNE_LitAll_1 "any"
+	NAVLNE_LitSec "any"
+	NAVLNE_LitSec_1 "any"
+	NAVLNE_LNDMRK "any"
+	NAVLNE_RECTRC "any"
+	newDat "any"
+	next "any"
+	nmkCorr "any"
+	note "any"
+	num "any"
+	pagCat "any"
+	page "any"
+	part "any"
+	pathDesc "any"
+	pilDesc "any"
+	PilotDist_PILBOP "any"
+	PointSet_CoorLine "any"
+	PointSet_I_FWDesc "any"
+	PointSet_I_RecTrc "any"
+	PointSet_I_ResAreDesc "any"
+	PointSet_I_TrafSep "any"
+	PointSet_I_TSPart "any"
+	poiS "any"
+	poiTab "any"
+	pos "any"
+	price "any"
+	Provides "any"
+	PtsSeg_I_PermDrau "any"
+	publ "any"
+	RadLoc_I_RLcol3 "any"
+	RadLoc_I_RLcol4 "any"
+	RadLoc_I_RLSMain "any"
+	RadLoc_I_RTcol1 "any"
+	RadLoc_I_RTcol2 "any"
+	RadLoc_RTPBCN "any"
+	RadNav_I_RNcol3 "any"
+	RadNav_I_RNcol4 "any"
+	RadNav_I_RNcol5 "any"
+	RadNav_I_RNSMain "any"
+	RadNav_I_RTcol1 "any"
+	RadNav_I_RTcol2 "any"
+	RadNav_I_RTRcol3 "any"
+	RadNav_I_RTRcol4 "any"
+	RadNav_I_RTRcol5 "any"
+	RadNav_I_RTRSMain "any"
+	RadNav_RadRec "any"
+	RadNav_RDOSTA "any"
+	RadNav_ResRad "any"
+	RadNavBase_I_RSBase "any"
+	RadNavBase_I_RTLcol2 "any"
+	RadNavBase_I_RTLcol3 "any"
+	RadNavBase_I_RTLcol4 "any"
+	RadNavBase_I_RTLcol5 "any"
+	RadNavBase_I_RTLcol6 "any"
+	RadNavBase_I_RTLcol7 "any"
+	RadNavBase_I_RTLcol8 "any"
+	RadNavSt_I_RSLead "any"
+	RadNavSt_I_RSSlave "any"
+	RadNavSt_I_RTLcol1 "any"
+	RadNavSt_I_RTLcol3 "any"
+	RadNavSt_RDOSTA "any"
+	RadNavSys_I_KKScol5 "any"
+	RadNavSys_I_KKScol6 "any"
+	RadNavSys_I_KKSSMain "any"
+	RadNavSys_I_RTcol1 "any"
+	RadNavSys_I_RTcol2 "any"
+	RadNavSys_RDOSTA "any"
+	RangSys_BOYLAT "any"
+	RangSys_BOYSAW "any"
+	RangSys_BOYSPP "any"
+	RangSys_OBSTRN "any"
+	RangSys_UWTROC "any"
+	RangSys_WRECKS "any"
+	RDOSTA_I_KKScol3 "any"
+	RDOSTA_I_KKScol4 "any"
+	RDOSTA_I_RTcol2 "any"
+	RDOSTA_I_RTLcol1 "any"
+	RDOSTA_I_RTLcol10 "any"
+	RDOSTA_I_RTLcol9 "any"
+	ResLit "any"
+	RTPBCN_I_RLcol3 "any"
+	RTPBCN_I_RLcol5 "any"
+	RTPBCN_I_RTcol2 "any"
+	RuRu "any"
+	scale "any"
+	secPoi "any"
+	Sign_incl_AidNav "any"
+	SignGr4 "any"
+	slave "any"
+	SLCONS_I_Leng "any"
+	SLCONS_I_NamNum "any"
+	SLCONS_I_TabLin "any"
+	SLOGRD_SLOTOP "any"
+	str_chart "any"
+	str_man "any"
+	str_nom "any"
+	SubReg_incl_UndReg "any"
+	SupportedBy "any"
+	tab "any"
+	tabChain "any"
+	table "any"
+	TrafSepScheme_I_TrafSep "any"
+	tspart "any"
+	WatRiv "any"
+	wigth "any"
+	year "any"
